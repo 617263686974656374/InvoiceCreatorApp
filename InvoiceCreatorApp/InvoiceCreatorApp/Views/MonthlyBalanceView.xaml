@@ -1,0 +1,146 @@
+﻿<Window x:Class="InvoiceCreatorApp.Views.MonthlyBalanceView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:InvoiceCreatorApp.Views"
+        xmlns:viewModel="clr-namespace:InvoiceCreatorApp.ViewModels"
+        mc:Ignorable="d"
+        Title="MonthlyBalanceView" Height="450" Width="800" Background="#FF9BC6D7"
+        ResizeMode="NoResize">
+
+    <Window.DataContext>
+        <viewModel:MonthlyBalanceViewModel/>
+    </Window.DataContext>
+
+    <Window.Resources>
+
+        <!-- Define button style -->
+        <Style x:Key="ButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#007ACC"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Width" Value="140"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect Color="Black" BlurRadius="10" ShadowDepth="5"/>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" 
+                            CornerRadius="10"
+                            RenderTransformOrigin="0.5,0.5">
+                            <Border.RenderTransform>
+                                <ScaleTransform ScaleX="1" ScaleY="1"/>
+                            </Border.RenderTransform>
+                            <ContentPresenter HorizontalAlignment="Center" 
+                         VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Trigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <ColorAnimation Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)" To="#005a9e" Duration="0:0:0.3"/>
+                                            <DoubleAnimation Storyboard.TargetProperty="(Border.RenderTransform).(ScaleTransform.ScaleX)" To="1.05" Duration="0:0:0.3"/>
+                                            <DoubleAnimation Storyboard.TargetProperty="(Border.RenderTransform).(ScaleTransform.ScaleY)" To="1.05" Duration="0:0:0.3"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.EnterActions>
+                                <Trigger.ExitActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <ColorAnimation Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)" To="#007ACC" Duration="0:0:0.3"/>
+                                            <DoubleAnimation Storyboard.TargetProperty="(Border.RenderTransform).(ScaleTransform.ScaleX)" To="1" Duration="0:0:0.3"/>
+                                            <DoubleAnimation Storyboard.TargetProperty="(Border.RenderTransform).(ScaleTransform.ScaleY)" To="1" Duration="0:0:0.3"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.ExitActions>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="#003366"/>
+                                <Setter Property="Effect">
+                                    <Setter.Value>
+                                        <DropShadowEffect Color="Black" BlurRadius="5" ShadowDepth="2"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border" Property="Background" Value="#CCCCCC"/>
+                                <Setter Property="Foreground" Value="#AAAAAA"/>
+                                <Setter Property="Effect" Value="{x:Null}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid HorizontalAlignment="Left" Height="330" Margin="255,94,0,0" VerticalAlignment="Top" Width="503">
+            <TabControl Margin="0,0,0,78">
+                <TabItem Header="Einnahmen">
+                    <Grid Background="#FFE5E5E5" Height="273">
+                        <DataGrid  ItemsSource="{Binding Invoices}" Margin="0,0,0,45" AutoGenerateColumns="False" IsReadOnly="True">
+
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Re.Nr." Width="50" Binding="{Binding InvoiceNumber}" CanUserResize="False"/>
+                                <DataGridTextColumn Header="Datum" Width="65" Binding="{Binding DateOfIssue}" CanUserResize="False"/>
+                                <DataGridTextColumn Header="Kunde" Binding="{Binding Customer.CustomerName}" Width="90" CanUserResize="False"/>
+                                <DataGridTextColumn Header="Netto" Width="80" Binding="{Binding Subtotal}" CanUserResize="False"/>
+                                <DataGridTextColumn Header="USt." Width="60" Binding="{Binding VAT}" CanUserResize="False"/>
+                                <DataGridTextColumn Header="Betrag" Width="90*" Binding="{Binding Total}" CanUserResize="False"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                </TabItem>
+                <TabItem Header="Ausgaben">
+                    <Grid Background="#FFE5E5E5" Height="273">
+                        <DataGrid ItemsSource="{Binding Expenses}" Margin="0,0,0,45" AutoGenerateColumns="False" IsReadOnly="True">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Re.Nr." Width="50" Binding="{Binding ExpenseNumber}" CanUserResize="False"/>
+                                <DataGridTextColumn Header="Datum" Width="65" Binding="{Binding IssueDate}" CanUserResize="False"/>
+                                <DataGridTextColumn Header="Kunde" Binding="{Binding CompanyName}" Width="90" CanUserResize="False"/>
+                                <DataGridTextColumn Header="Netto" Width="80" Binding="{Binding Netto}" CanUserResize="False"/>
+                                <DataGridTextColumn Header="USt." Width="60" Binding="{Binding VAT}" CanUserResize="False"/>
+                                <DataGridTextColumn Header="Betrag" Width="90*" Binding="{Binding Total}" CanUserResize="False"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                </TabItem>
+            </TabControl>
+        </Grid>
+
+        <DatePicker HorizontalAlignment="Left" Margin="364,30,0,0" VerticalAlignment="Top" Name="von" DisplayDateEnd="{Binding EndDate}" DisplayDateStart="{Binding StartDate}" SelectedDate="{Binding StartDateSelected}" SelectedDateFormat="Short" />
+        <DatePicker HorizontalAlignment="Left" Margin="538,30,0,0" VerticalAlignment="Top" Name="bis"  DisplayDateEnd="{Binding EndDate}" SelectedDate="{Binding EndDateSelected}"/>
+
+        <Button HorizontalAlignment="Left" VerticalAlignment="Top" Content="Back" Margin="50,350,0,0" Command="{Binding OpenInvoiceCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}" Style="{StaticResource ButtonStyle}">
+            <Button.RenderTransform>
+                <MatrixTransform/>
+            </Button.RenderTransform>
+        </Button>
+
+        <TextBlock x:Name="txtbIncome" HorizontalAlignment="Left" Margin="72,127,0,0" TextWrapping="Wrap" Text="{Binding Income}"  VerticalAlignment="Top" Width="96" FontWeight="Bold" FontSize="16"/>
+        <TextBlock x:Name="txtbExpense" HorizontalAlignment="Left" Margin="72,201,0,0" TextWrapping="Wrap" Text="{Binding Expense}" VerticalAlignment="Top" Width="97" FontSize="16" FontWeight="Bold"/>
+        <TextBlock x:Name="txtbFinalBalance" HorizontalAlignment="Left" Margin="72,264,0,0" TextWrapping="Wrap" Text="{Binding FinalBalance}" VerticalAlignment="Top" Width="97" FontSize="16" FontWeight="Bold"/>
+
+        <Label x:Name="lblIncome" Content="Einnahmen:" HorizontalAlignment="Left" Margin="60,96,0,0" VerticalAlignment="Top" FontWeight="Bold" FontSize="16"/>
+        <Label x:Name="lblExpense" Content="Ausgaben:" HorizontalAlignment="Left" Margin="60,170,0,0" VerticalAlignment="Top" FontWeight="Bold" FontSize="16"/>
+        <Label x:Name="lblFinalBalance" Content="Endgültige Bilanz:" HorizontalAlignment="Left" Margin="60,233,0,0" VerticalAlignment="Top" FontWeight="Bold" FontSize="16"/>
+        <Label Content="€" HorizontalAlignment="Left" Margin="173,122,0,0" VerticalAlignment="Top" FontSize="16" FontWeight="Bold"/>
+        <Label Content="€" HorizontalAlignment="Left" Margin="171,195,0,0" VerticalAlignment="Top" FontSize="16" FontWeight="Bold"/>
+        <Label Content="€" HorizontalAlignment="Left" Margin="171,259,0,0" VerticalAlignment="Top" FontSize="16" FontWeight="Bold"/>
+        <Label Content="-" HorizontalAlignment="Left" Margin="50,196,0,0" VerticalAlignment="Top" FontSize="16" FontWeight="Bold"/>
+        <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="69" Margin="50,96,0,0" VerticalAlignment="Top" Width="156"/>
+        <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="68" Margin="50,165,0,0" VerticalAlignment="Top" Width="156"/>
+        <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="68" Margin="50,233,0,0" VerticalAlignment="Top" Width="156"/>
+    </Grid>
+</Window>
